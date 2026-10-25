@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,7 +9,10 @@ public class PlayerController : MonoBehaviour
     [Header("Movimiento")]
     public float walkSpeed = 4f;
     public float runSpeed = 8f;
-    public float rotationSpeed = 15f; // Velocidad para que el giro sea suave
+    
+    [Header("Rotación")]
+    [Tooltip("Velocidad de giro en grados por segundo")]
+    public float turnSpeed = 720f; // 720°/s da un giro muy fluido y natural
 
     void Start()
     {
@@ -18,39 +22,50 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Detectar si presiona Shift para correr
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        bool isRunning = keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed;
         float currentSpeed = isRunning ? runSpeed : walkSpeed;
 
-        // Capturar los ejes
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        float moveX = 0f;
+        if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) moveX += 1f;
+        if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) moveX -= 1f;
 
-        // Vector de movimiento (.normalized evita que el personaje corra más rápido en diagonal)
-        Vector3 move = new Vector3(moveX, 0, moveZ).normalized;
-        
-        // Mover al personaje
+        float moveZ = 0f;
+        if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) moveZ += 1f;
+        if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) moveZ -= 1f;
+
+        Vector3 move = new Vector3(moveX, 0f, moveZ).normalized;
+
+        // --- ROTACIÓN NATURAL ---
+        if (move != Vector3.zero)
+        {
+            // Calculamos la rotación hacia donde nos movemos
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+
+            // Giramos gradualmente en grados por segundo en lugar de usar Slerp brusco
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation, 
+                targetRotation, 
+                turnSpeed * Time.deltaTime
+            );
+        }
+
+        // --- MOVIMIENTO Y GRAVEDAD ---
         controller.Move(move * currentSpeed * Time.deltaTime);
 
-        // Gravedad simple para mantenerlo pegado al suelo
-        if (controller.isGrounded == false)
+        if (!controller.isGrounded)
         {
             controller.Move(Vector3.down * 9.81f * Time.deltaTime);
         }
 
-        // Pasar la velocidad al Animator (0 = Idle, 0.5 = Walk, 1 = Run)
-        float animationSpeed = move.magnitude * (isRunning ? 1f : 0.5f);
-        
+        // --- ANIMACIÓN SUAVE ---
+        float targetAnimationSpeed = move.magnitude * (isRunning ? 1f : 0.5f);
         if (animator != null)
         {
-            animator.SetFloat("Speed", animationSpeed);
-        }
-
-        // Rotación suave hacia donde se dirige
-        if (move != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            // Usamos DampTime para que las animaciones entre Idle, Walk y Run no entren de golpe
+            animator.SetFloat("Speed", targetAnimationSpeed, 0.1f, Time.deltaTime);
         }
     }
 }
