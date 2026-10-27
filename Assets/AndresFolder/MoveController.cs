@@ -1,8 +1,12 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class MoveController : MonoBehaviour
 {
+    public const string Book2Key = "Book2Collected";
+
     private CharacterController controller;
     private Animator animator;
 
@@ -11,26 +15,40 @@ public class MoveController : MonoBehaviour
     [Header("Movimiento")]
     public float walkSpeed = 4f;
     public float runSpeed = 8f;
+    public float slowMultiplier =0.35f;
     [SerializeField] private float bookRunSpeed = 12f;
 
-    [Header("Rotación")]
-    [Tooltip("Velocidad de giro en grados por segundo")]
-    public float turnSpeed = 720f;
+    [Header("Dash")]
+    [SerializeField] private Key dashKey = Key.E;
+    [SerializeField, Min(0.1f)] private float dashDistance = 5f;
+    [SerializeField, Min(0.01f)] private float dashDuration = 0.15f;
+    [SerializeField, Min(0f)] private float dashCooldown = 2f;
 
-    [Header("Muerte")]
-    [SerializeField] private string deathTrigger = "Death";
+    //[Header("Rotación")]
+    //[Tooltip("Velocidad de giro en grados por segundo")]
+    private float turnSpeed = 720f;
 
-    [Header("Animación")]
-    [SerializeField, Min(0f)] private float idleTransitionTime = 0.15f;
+    //[Header("Muerte")]
+    private string deathTrigger = "Death";
+    [SerializeField, Min(0f)] private float deathRestartDelay = 2f;
+
+    //[Header("Animación")]
+    private float idleTransitionTime = 0.15f;
 
     private bool isDead;
     private bool hasBook;
+    private bool hasDash;
+    private bool isSlowed;
+    private bool isDashing;
+    private Coroutine slowRoutine;
+    private float dashCooldownTimer;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
         hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
+        hasDash = PlayerPrefs.GetInt(Book2Key, 0) == 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -49,8 +67,22 @@ public class MoveController : MonoBehaviour
 
         bool isRunning = Keyboard.current.leftShiftKey.isPressed
             || Keyboard.current.rightShiftKey.isPressed;
+        dashCooldownTimer -= Time.deltaTime;
+
+        if (hasDash && Keyboard.current[dashKey].wasPressedThisFrame
+            && dashCooldownTimer <= 0f && !isDashing)
+        {
+            StartCoroutine(Dash());
+        }
+
+        if (isDashing)
+        {
+            return;
+        }
+
         float currentRunSpeed = hasBook ? bookRunSpeed : runSpeed;
         float currentSpeed = isRunning ? currentRunSpeed : walkSpeed;
+        currentSpeed *= isSlowed ? slowMultiplier : 1f;
         Vector3 movement = GetMovement();
 
         RotateTowards(movement);
@@ -98,6 +130,13 @@ public class MoveController : MonoBehaviour
             animator.SetFloat("Speed", 0f);
             animator.SetTrigger(deathTrigger);
         }
+
+        Invoke(nameof(RestartAttempt), deathRestartDelay);
+    }
+
+    private void RestartAttempt()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void CollectBook()
@@ -111,6 +150,61 @@ public class MoveController : MonoBehaviour
     public void ResetBook()
     {
         hasBook = false;
+    }
+
+    public void UnlockDash()
+    {
+        hasDash = true;
+        PlayerPrefs.SetInt(Book2Key, 1);
+        PlayerPrefs.Save();
+        Debug.Log("Book2 agregado al inventario. Dash desbloqueado.", this);
+    }
+
+    public void ResetDash()
+    {
+        hasDash = false;
+    }
+
+    private IEnumerator Dash()
+    {
+        isDashing = true;
+        dashCooldownTimer = dashCooldown;
+
+        Vector3 dashDirection = GetMovement();
+        if (dashDirection == Vector3.zero)
+        {
+            dashDirection = transform.forward;
+        }
+
+        float dashSpeed = dashDistance / dashDuration;
+        float elapsedDashTime = 0f;
+
+        while (elapsedDashTime < dashDuration && !isDead)
+        {
+            controller.Move(dashDirection * dashSpeed * Time.deltaTime);
+            elapsedDashTime += Time.deltaTime;
+            yield return null;
+        }
+
+        isDashing = false;
+    }
+
+    public void ApplySlow(float duration)
+    {
+        if (slowRoutine != null)
+        {
+            StopCoroutine(slowRoutine);
+        }
+
+        slowRoutine = StartCoroutine(SlowRoutine(duration));
+    }
+
+    private IEnumerator SlowRoutine(float duration)
+    {
+        isSlowed = true;
+        yield return new WaitForSeconds(duration);
+        isSlowed = false;
+        slowRoutine = null;
     }
 
     private Vector3 GetMovement()

@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   enemyPrefab: {fileID: 3552903022292932892, guid: ba451c9ba8281b54abe134284be8a4f1, type: 3}
+  chasingEnemyPrefab: {fileID: 4176570926003155344, guid: b13c3e54e31a1b74d8c419787ea2117c, type: 3}
   enemyCount: 3
   spawnInterval: 2
   enemyContainer: {fileID: 0}
@@ -57,4 +58,9 @@ MonoBehaviour:
   - {fileID: 0}
   minimumActivePosition: {x: -25, y: -10, z: -25}
   maximumActivePosition: {x: 25, y: 10, z: 25}
-  gameDuration: 60
+  gameDuration: 20
+  player: {fileID: 0}
+  book1: {fileID: 0}
+  alwaysShowBookForTesting: 0
+  chasingEnemyCount: 1
+  chasingSpawnInterval: 5

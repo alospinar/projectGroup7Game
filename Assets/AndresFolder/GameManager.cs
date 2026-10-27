@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     [SerializeField, Min(0.1f)] private float gameDuration = 60f;
     [SerializeField] private MoveController player;
     [SerializeField] private GameObject book1;
+    [SerializeField] private GameObject book2;
+    [SerializeField] private bool alwaysShowBookForTesting = true;
 
     private readonly List<GameObject> enemyPool = new List<GameObject>();
     private readonly List<GameObject> chasingEnemyPool = new List<GameObject>();
@@ -42,13 +44,23 @@ public class GameManager : MonoBehaviour
     private void RestoreBookInventory()
     {
         bool hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
+        bool hasDash = PlayerPrefs.GetInt(MoveController.Book2Key, 0) == 1;
 
-        if (hasBook && book1 != null)
+        if (book1 != null)
         {
-            book1.SetActive(false);
+            book1.SetActive(alwaysShowBookForTesting || !hasBook);
         }
 
-        Debug.Log($"Inventario: book1 {(hasBook ? "obtenido" : "no obtenido")}.", this);
+        if (book2 != null)
+        {
+            book2.SetActive(!hasDash);
+        }
+
+        Debug.Log(
+            $"Inventario: book1 {(hasBook ? "obtenido" : "no obtenido")}. "
+            + $"book2 {(hasDash ? "obtenido" : "no obtenido")}. "
+            + $"Visible para pruebas: {alwaysShowBookForTesting}.",
+            this);
     }
 
     private void Start()
@@ -265,6 +277,7 @@ public class GameManager : MonoBehaviour
     public void StartNewGame()
     {
         PlayerPrefs.DeleteKey(BookPosition.Book1Key);
+        PlayerPrefs.DeleteKey(MoveController.Book2Key);
         PlayerPrefs.Save();
 
         if (book1 != null)
@@ -275,6 +288,12 @@ public class GameManager : MonoBehaviour
         if (player != null)
         {
             player.ResetBook();
+            player.ResetDash();
+        }
+
+        if (book2 != null)
+        {
+            book2.SetActive(true);
         }
 
         Debug.Log("Nueva partida: progreso de libros reiniciado.", this);

@@ -33,7 +33,7 @@ Transform:
   m_Children:
   - {fileID: 3594670917102618839}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!143 &5237062524619323709
 CharacterController:
   m_ObjectHideFlags: 0
@@ -73,10 +73,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MoveController
   cameraTransform: {fileID: 0}
   walkSpeed: 4
-  runSpeed: 8
-  turnSpeed: 720
-  deathTrigger: Death
-  idleTransitionTime: 0.15
+  runSpeed: 6
+  slowMultiplier: 0.35
+  bookRunSpeed: 10
+  deathRestartDelay: 3
 --- !u!1001 &3920505908583018300
 PrefabInstance:
   m_ObjectHideFlags: 0

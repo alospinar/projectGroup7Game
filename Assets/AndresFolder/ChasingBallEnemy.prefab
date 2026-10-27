@@ -154,5 +154,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChasingBallEnemy
   player: {fileID: 0}
-  speed: 3
-  lifetime: 6
+  speed: 4
+  lifetime: 8
