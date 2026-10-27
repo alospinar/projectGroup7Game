@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class MoveController : MonoBehaviour
 {
     public const string Book2Key = "Book2Collected";
+    public const string Book3Key = "Book3Collected";
 
     private CharacterController controller;
     private Animator animator;
@@ -24,6 +25,17 @@ public class MoveController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float dashDuration = 0.15f;
     [SerializeField, Min(0f)] private float dashCooldown = 2f;
 
+    [Header("Bola de fuego")]
+    [SerializeField] private Key reflectKey = Key.F;
+    [SerializeField] private GameObject fireballPrefab;
+    [SerializeField, Min(0.1f)] private float fireballSpeed = 12f;
+    [SerializeField, Min(0.1f)] private float fireballLifetime = 3f;
+    [SerializeField, Min(0f)] private float fireballCooldown = 1f;
+    [SerializeField, Min(0.1f)] private float fireballSpawnDistance = 1.2f;
+    [SerializeField] private float fireballSpawnHeight = 1f;
+    [SerializeField, Min(0f)] private float fireballAttackDelay = 0.35f;
+    [SerializeField] private string attackTrigger = "Attack";
+
     //[Header("Rotación")]
     //[Tooltip("Velocidad de giro en grados por segundo")]
     private float turnSpeed = 720f;
@@ -38,10 +50,12 @@ public class MoveController : MonoBehaviour
     private bool isDead;
     private bool hasBook;
     private bool hasDash;
+    private bool hasReflect;
     private bool isSlowed;
     private bool isDashing;
     private Coroutine slowRoutine;
     private float dashCooldownTimer;
+    private float fireballCooldownTimer;
 
     private void Awake()
     {
@@ -49,6 +63,7 @@ public class MoveController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
         hasDash = PlayerPrefs.GetInt(Book2Key, 0) == 1;
+        hasReflect = PlayerPrefs.GetInt(Book3Key, 0) == 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -68,11 +83,18 @@ public class MoveController : MonoBehaviour
         bool isRunning = Keyboard.current.leftShiftKey.isPressed
             || Keyboard.current.rightShiftKey.isPressed;
         dashCooldownTimer -= Time.deltaTime;
+        fireballCooldownTimer -= Time.deltaTime;
 
         if (hasDash && Keyboard.current[dashKey].wasPressedThisFrame
             && dashCooldownTimer <= 0f && !isDashing)
         {
             StartCoroutine(Dash());
+        }
+
+        if (hasReflect && Keyboard.current[reflectKey].wasPressedThisFrame
+            && fireballCooldownTimer <= 0f && !isDashing)
+        {
+            StartCoroutine(AttackWithFireball());
         }
 
         if (isDashing)
@@ -100,6 +122,48 @@ public class MoveController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         DieIfHitByBall(other.gameObject);
+    }
+
+    private IEnumerator AttackWithFireball()
+    {
+        if (fireballPrefab == null)
+        {
+            Debug.LogError(
+                "MoveController: asigna el prefab de la bola de fuego del jugador.",
+                this);
+
+            yield break;
+        }
+
+        fireballCooldownTimer = fireballCooldown;
+
+        if (animator != null)
+        {
+            animator.SetTrigger(attackTrigger);
+            yield return null;
+            yield return new WaitForSeconds(fireballAttackDelay);
+        }
+
+        LaunchFireball();
+    }
+
+    private void LaunchFireball()
+    {
+        Vector3 launchDirection = transform.forward;
+        Vector3 spawnPosition = transform.position
+            + launchDirection * fireballSpawnDistance
+            + Vector3.up * fireballSpawnHeight;
+        GameObject fireballObject = Instantiate(fireballPrefab, spawnPosition, Quaternion.LookRotation(launchDirection));
+        PlayerFireball fireball = fireballObject.GetComponent<PlayerFireball>();
+
+        if (fireball == null)
+        {
+            Destroy(fireballObject);
+            Debug.LogError("MoveController: el prefab debe tener el componente PlayerFireball.", this);
+            return;
+        }
+
+        fireball.Initialize(launchDirection, fireballSpeed, fireballLifetime);
     }
 
     private void DieIfHitByBall(GameObject other)
@@ -163,6 +227,19 @@ public class MoveController : MonoBehaviour
     public void ResetDash()
     {
         hasDash = false;
+    }
+
+    public void UnlockReflect()
+    {
+        hasReflect = true;
+        PlayerPrefs.SetInt(Book3Key, 1);
+        PlayerPrefs.Save();
+        Debug.Log("Book3 agregado al inventario. Reflejo desbloqueado.", this);
+    }
+
+    public void ResetReflect()
+    {
+        hasReflect = false;
     }
 
     private IEnumerator Dash()
