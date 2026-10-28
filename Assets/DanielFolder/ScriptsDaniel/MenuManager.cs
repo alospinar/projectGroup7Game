@@ -17,8 +17,9 @@ public class MenuManager : MonoBehaviour
     public GameObject resumeButton;
     public GameObject credits;
     public GameObject menuPCE;
+    public GameObject tutorial;
 
-    
+
     public InputAction pauseAction;
 
     private bool isPaused = false;
@@ -52,6 +53,7 @@ public class MenuManager : MonoBehaviour
 
     public void PlayGame()
     {
+        tutorial.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
 
@@ -67,6 +69,12 @@ public class MenuManager : MonoBehaviour
     {
         credits.SetActive(true);
         menuPCE.SetActive(false);
+
+    }
+    public void Tutorial()
+    {
+        tutorial.SetActive(true);
+        menuPCE?.SetActive(false);
 
     }
     public void ReturnCredits()
