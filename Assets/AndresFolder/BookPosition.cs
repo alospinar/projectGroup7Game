@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class BookPosition : MonoBehaviour
 {
-    public const string Book1Key = "Book1Collected";
-
     [SerializeField] private Transform positionContainer;
     [SerializeField, Min(0.1f)] private float changeInterval = 10f;
 
