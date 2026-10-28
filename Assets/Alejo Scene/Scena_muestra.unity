@@ -1052,6 +1052,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2e64b56cbc133f168b6c37a8a1e646a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1842190828}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2e64b56cbc133f168b6c37a8a1e646a4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1842190832}
   m_SourcePrefab: {fileID: 100100000, guid: 2e64b56cbc133f168b6c37a8a1e646a4, type: 3}
 --- !u!1 &1534128347
 GameObject:
@@ -1470,6 +1473,19 @@ MonoBehaviour:
   audioSource: {fileID: 1842190828}
   attackSound: {fileID: 8300000, guid: fc5d32dd48d06bb7a8ba702777738875, type: 3}
   idleSound: {fileID: 8300000, guid: 7dc506d2b4bf7b1bea1d41fe38b82c17, type: 3}
+  deathSound: {fileID: 8300000, guid: c6d27c16be1998666a97865789906fc9, type: 3}
+--- !u!114 &1842190832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842190825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c28c448269acdecc866e9a8cfcfac9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDeath
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
