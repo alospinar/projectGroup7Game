@@ -47,6 +47,12 @@ public class BookPosition : MonoBehaviour
         }
 
         player.CollectBook();
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.AddBookTime();
+        }
+
         gameObject.SetActive(false);
     }
 }

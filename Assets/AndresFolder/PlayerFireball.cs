@@ -42,16 +42,18 @@ public class PlayerFireball : MonoBehaviour
             return;
         }
 
-        GameObject enemy = other.CompareTag("Enemy") ? other : null;
-        MoveBallEnemy enemyComponent = other.GetComponentInParent<MoveBallEnemy>();
-        if (enemy == null && enemyComponent != null)
+        EnemyDeath enemyDeath = other.GetComponentInParent<EnemyDeath>();
+        if (enemyDeath != null)
         {
-            enemy = enemyComponent.gameObject;
+            enemyDeath.Die();
+            Destroy(gameObject);
+            return;
         }
 
-        if (enemy != null)
+        MoveBallEnemy fireballEnemy = other.GetComponentInParent<MoveBallEnemy>();
+        if (fireballEnemy != null)
         {
-            enemy.SetActive(false);
+            fireballEnemy.gameObject.SetActive(false);
             Destroy(gameObject);
         }
     }

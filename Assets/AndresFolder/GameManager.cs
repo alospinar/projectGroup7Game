@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Tiempo de partida")]
     [SerializeField, Min(0.1f)] private float gameDuration = 60f;
+    [SerializeField, Min(0f)] private float bookTimeBonus = 60f;
     [SerializeField] private MoveController player;
     [SerializeField] private GameObject book1;
     [SerializeField] private GameObject book2;
@@ -88,7 +89,16 @@ public class GameManager : MonoBehaviour
         }
 
         lastDisplayedSecond = remainingSeconds;
-        //Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
+        Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
+    }
+
+    public void AddBookTime()
+    {
+        gameDuration += bookTimeBonus;
+        Debug.Log(
+            $"Libro recogido. Se añadieron {bookTimeBonus:0} segundos. "
+            + $"Tiempo total: {gameDuration:0} segundos.",
+            this);
     }
 
     private void CreateEnemyPool()
