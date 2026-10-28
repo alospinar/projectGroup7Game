@@ -11,6 +11,7 @@ public class MoveController : MonoBehaviour
     private Animator animator;
 
     [SerializeField] private Transform cameraTransform;
+    [SerializeField] private GameManager gameManager;
 
     [Header("Movimiento")]
     public float walkSpeed = 4f;
@@ -192,6 +193,16 @@ public class MoveController : MonoBehaviour
         }
 
         isDead = true;
+
+        if (gameManager != null)
+        {
+            gameManager.playerIsDead = true;
+        }
+        else
+        {
+            Debug.LogError("MoveController: falta asignar GameManager.", this);
+        }
+
         controller.enabled = false;
 
         if (animator != null)

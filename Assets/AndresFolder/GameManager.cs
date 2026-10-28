@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using TMPro;
 public class GameManager : MonoBehaviour
 {
     [Header("Enemigos")]
@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject book1;
     [SerializeField] private GameObject book2;
     [SerializeField] private GameObject book3;
+    [SerializeField] private TMP_Text timeText;
 
     private readonly List<GameObject> enemyPool = new List<GameObject>();
     private readonly List<GameObject> chasingEnemyPool = new List<GameObject>();
@@ -32,13 +33,18 @@ public class GameManager : MonoBehaviour
     private float chasingSpawnTimer;
     private int lastDisplayedSecond = -1;
     private bool spawning = true;
+    public SpellResetBehaviour spellResetBehaviour;
     [SerializeField, Min(0)] private int chasingEnemyCount = 1;
     [SerializeField, Min(0.1f)] private float chasingSpawnInterval = 15f;
+    public bool playerIsDead = false;
+    public bool gameWin = false;
+    private bool gameEnded;
 
     private void Awake()
     {
         CreateEnemyPool();
         CreateChasingEnemyPool();
+        playerIsDead = false;
     }
 
     private void Start()
@@ -52,13 +58,15 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-
-        elapsedTime += Time.deltaTime;
-        PrintRemainingTime();
+        if (!playerIsDead)
+        {
+            elapsedTime += Time.deltaTime;
+        }
+        PrintRemainingTime(playerIsDead);
 
         if (elapsedTime >= gameDuration)
         {
-            StopSpawning();
+            StopSpawning(false);
             return;
         }
 
@@ -79,17 +87,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void PrintRemainingTime()
+    private void PrintRemainingTime(bool canSpell)
     {
-        int remainingSeconds = Mathf.Max(0, Mathf.CeilToInt(gameDuration - elapsedTime));
-
-        if (remainingSeconds == lastDisplayedSecond)
+        if (!canSpell)
         {
-            return;
-        }
+            int remainingSeconds = Mathf.Max(0, Mathf.CeilToInt(gameDuration - elapsedTime));
 
-        lastDisplayedSecond = remainingSeconds;
-        Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
+            if (remainingSeconds == lastDisplayedSecond)
+            {
+                return;
+            }
+
+            lastDisplayedSecond = remainingSeconds;
+
+            if (timeText != null)
+            {
+                timeText.text = $"Tiempo para el bucle: {remainingSeconds}";
+            }
+        }
     }
 
     public void AddBookTime()
@@ -252,8 +267,10 @@ public class GameManager : MonoBehaviour
             && position.z >= minimum.z && position.z <= maximum.z;
     }
 
-    private void StopSpawning()
+    private void StopSpawning(bool won)
     {
+        if (gameEnded) return;
+        gameEnded = true;
         spawning = false;
 
         foreach (GameObject enemy in enemyPool)
@@ -266,9 +283,13 @@ public class GameManager : MonoBehaviour
             enemy.SetActive(false);
         }
 
-        if (player != null)
+        if (spellResetBehaviour != null)
         {
-            player.Die();
+            spellResetBehaviour.PlaySequence(won);
+        }
+        else
+        {
+            Debug.LogError("GameManager: falta asignar SpellResetBehaviour.", this);
         }
     }
 
@@ -297,5 +318,9 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("Nueva partida: libros y habilidades reiniciados.", this);
+    }
+    public void EndGameBecauseEnemyDied()
+    {
+        StopSpawning(true);
     }
 }
