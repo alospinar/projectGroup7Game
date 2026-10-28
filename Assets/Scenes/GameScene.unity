@@ -6035,6 +6035,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 482853167}
     - target: {fileID: 5452607974136536034, guid: 0a02154d0f240b048a63b713be7da81d, type: 3}
+      propertyPath: tutorial
+      value: 
+      objectReference: {fileID: 1630951999}
+    - target: {fileID: 5452607974136536034, guid: 0a02154d0f240b048a63b713be7da81d, type: 3}
       propertyPath: pauseMenu
       value: 
       objectReference: {fileID: 2062782569}
@@ -12607,6 +12611,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d4c7ca45b7fafb34e9db3f75cef8dd84, type: 3}
+--- !u!1 &1630951999 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2060347858737959946, guid: d4c7ca45b7fafb34e9db3f75cef8dd84, type: 3}
+  m_PrefabInstance: {fileID: 1630951998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1665834676
 PrefabInstance:
   m_ObjectHideFlags: 0
