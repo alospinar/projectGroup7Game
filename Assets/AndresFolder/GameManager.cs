@@ -142,7 +142,17 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            enemy.transform.SetPositionAndRotation(GetRandomSpawnPosition(), Quaternion.identity);
+            Transform spawnPoint = GetRandomSpawnPoint();
+            enemy.transform.SetPositionAndRotation(
+                spawnPoint.position,
+                spawnPoint.rotation);
+
+            MoveBallEnemy fireball = enemy.GetComponent<MoveBallEnemy>();
+            if (fireball != null)
+            {
+                fireball.SetDirection(spawnPoint.forward);
+            }
+
             enemy.SetActive(true);
         }
     }
@@ -190,7 +200,9 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            enemy.transform.SetPositionAndRotation(GetRandomSpawnPosition(), Quaternion.identity);
+            enemy.transform.SetPositionAndRotation(
+                GetRandomSpawnPoint().position,
+                Quaternion.identity);
             enemy.SetActive(true);
             break;
         }
@@ -218,10 +230,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Vector3 GetRandomSpawnPosition()
+    private Transform GetRandomSpawnPoint()
     {
-        GameObject spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        return spawnPoint.transform.position;
+        return spawnPoints[Random.Range(0, spawnPoints.Length)].transform;
     }
 
     private static bool IsInsideRange(Vector3 position, Vector3 minimum, Vector3 maximum)

@@ -95,7 +95,7 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 8034617027523137422}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!65 &266105817853454650
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -134,7 +134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2607003210200231984
 Transform:
   m_ObjectHideFlags: 0
@@ -225,7 +225,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6292584873437139385
 Transform:
   m_ObjectHideFlags: 0
