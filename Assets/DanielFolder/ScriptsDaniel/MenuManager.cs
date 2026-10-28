@@ -14,7 +14,9 @@ public class MenuManager : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject pauseButton;
     public GameObject eventSystem;
-    public GameObject ResumeButton;
+    public GameObject resumeButton;
+    public GameObject credits;
+    public GameObject menuPCE;
 
     
     public InputAction pauseAction;
@@ -63,7 +65,14 @@ public class MenuManager : MonoBehaviour
 
     public void ShowCredits()
     {
-        Debug.Log("Credits button clicked");
+        credits.SetActive(true);
+        menuPCE.SetActive(false);
+
+    }
+    public void ReturnCredits()
+    {
+        credits.SetActive(false);
+        menuPCE.SetActive(true);
     }
 
     public void PauseGame(bool dead)
@@ -71,11 +80,11 @@ public class MenuManager : MonoBehaviour
         isPaused = !isPaused;
         if (dead)
         {
-            ResumeButton.SetActive(false);
+            resumeButton.SetActive(false);
         }
         else
         {
-            ResumeButton.SetActive(true);
+            resumeButton.SetActive(true);
         }
 
         pauseMenu.SetActive(isPaused);
