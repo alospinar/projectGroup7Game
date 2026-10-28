@@ -11,6 +11,12 @@ public class DashBook : MonoBehaviour
         }
 
         player.UnlockDash();
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.AddBookTime();
+        }
+
         gameObject.SetActive(false);
     }
 }

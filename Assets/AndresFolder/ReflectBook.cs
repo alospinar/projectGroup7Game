@@ -11,6 +11,12 @@ public class ReflectBook : MonoBehaviour
         }
 
         player.UnlockReflect();
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.AddBookTime();
+        }
+
         gameObject.SetActive(false);
     }
 }
