@@ -233,6 +233,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 161027e047d98e147a6281e84c266d7d, type: 3}
+--- !u!1 &497479315 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3650519350825250345, guid: 161027e047d98e147a6281e84c266d7d, type: 3}
+  m_PrefabInstance: {fileID: 497479314}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &618266210 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2093878788164028235, guid: f9efe88428d4ef34d8f4def172935f4e, type: 3}
@@ -703,6 +708,10 @@ PrefabInstance:
       propertyPath: pauseButton
       value: 
       objectReference: {fileID: 2100572693}
+    - target: {fileID: 5452607974136536034, guid: 0a02154d0f240b048a63b713be7da81d, type: 3}
+      propertyPath: ResumeButton
+      value: 
+      objectReference: {fileID: 497479315}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
