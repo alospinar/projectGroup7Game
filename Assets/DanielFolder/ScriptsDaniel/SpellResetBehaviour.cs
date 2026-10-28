@@ -8,10 +8,12 @@ public class SpellResetBehaviour : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text messageText;
+    [SerializeField] private MenuManager menuManager;
 
     [Header("Texto")]
     [TextArea(2, 5)]
     [SerializeField] private string message;
+    [SerializeField] private string messageWin;
 
     [SerializeField] private float secondsPerCharacter = 0.05f;
 
@@ -27,37 +29,33 @@ public class SpellResetBehaviour : MonoBehaviour
         imageTransform = image.rectTransform;
     }
 
-    public void PlaySequence()
+    public void PlaySequence(bool won)
     {
         if (sequenceCoroutine != null)
             StopCoroutine(sequenceCoroutine);
 
-        sequenceCoroutine = StartCoroutine(PlaySequenceCoroutine());
+        string messageToShow = won ? messageWin : message;
+        sequenceCoroutine = StartCoroutine(PlaySequenceCoroutine(messageToShow));
     }
 
-    private IEnumerator PlaySequenceCoroutine()
+    private IEnumerator PlaySequenceCoroutine(string messageToShow)
     {
-        // Reiniciar el estado visual
         imageTransform.localScale = Vector3.zero;
         messageText.text = "";
 
-        float textDuration = message.Length * secondsPerCharacter;
+        float textDuration = messageToShow.Length * secondsPerCharacter;
         float imageDuration = textDuration - 2f;
 
-        // La imagen debe terminar 2 segundos antes que el texto.
         if (imageDuration > 0f)
             StartCoroutine(AnimateImage(imageDuration));
 
-        // Efecto de maquina de escribir
-        foreach (char character in message)
+        foreach (char character in messageToShow)
         {
             messageText.text += character;
             yield return new WaitForSeconds(secondsPerCharacter);
         }
 
-        // Ejecutar al terminar la secuencia
         Restart();
-
         sequenceCoroutine = null;
     }
 
@@ -94,8 +92,6 @@ public class SpellResetBehaviour : MonoBehaviour
 
     private void Restart()
     {
-        Debug.Log("La secuencia ha terminado.");
-
-        // Aqui agregaras tu comportamiento.
+        menuManager.PlayGame();
     }
 }
