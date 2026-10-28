@@ -170,6 +170,7 @@ public class MoveController : MonoBehaviour
         }
 
         fireball.Initialize(launchDirection, fireballSpeed, fireballLifetime);
+        AudioManager.Instance?.PlayFireSFX();
     }
 
     private void DieIfHitByBall(GameObject other)
@@ -193,6 +194,7 @@ public class MoveController : MonoBehaviour
         }
 
         isDead = true;
+        AudioManager.Instance?.PlayDeathSFX();
 
         if (gameManager != null)
         {
@@ -222,6 +224,7 @@ public class MoveController : MonoBehaviour
     public void CollectBook()
     {
         hasBook = true;
+        AudioManager.Instance?.PlayBookSFX();
         Debug.Log("Libro book1 agregado al inventario. Carrera rápida activada.", this);
         bookCount++;
         bookCountText.text = ": " + bookCount.ToString();
@@ -263,6 +266,7 @@ public class MoveController : MonoBehaviour
         isDashing = true;
         dashCooldownTimer = dashCooldown;
         Debug.Log("Dash activado.", this);
+        AudioManager.Instance?.PlayDashSFX();
 
         Vector3 dashDirection = GetMovement();
         if (dashDirection == Vector3.zero)
