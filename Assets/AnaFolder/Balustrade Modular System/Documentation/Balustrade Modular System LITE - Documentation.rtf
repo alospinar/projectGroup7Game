@@ -1,0 +1,131 @@
+{\rtf1\ansi\ansicpg1252\deff0
+{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+\viewkind4\uc1
+\pard\sa120\f0\fs36\b BALUSTRADE MODULAR SYSTEM LITE\b0\fs22\par
+\pard\sa120\fs24 User Guide and Script Reference\par
+\pard\sa240\fs20 Free LITE version - includes the complete Editor tool and a subset of the content.\par
+
+\pard\sa120\fs28\b CONTENTS\b0\fs22\par
+\pard\sa0 1. Installation\par
+2. Render Pipeline Setup\par
+3. Quick Start\par
+4. The Tool Window\par
+5. Building a Balustrade\par
+6. Pillar Types\par
+7. Continue Build\par
+8. T-Junctions and Branching\par
+9. Corners and Curved Rails\par
+10. Close Loop\par
+11. Inner and Outer Arc Swap\par
+12. Variants, Baluster Styles, Tops and Textures\par
+13. Selection, Deletion and Undo\par
+14. Full Detail and Performance\par
+15. Package Contents\par
+16. Script Reference\par
+17. Troubleshooting\par
+\pard\sa240 18. Support and Full Version\par
+
+\pard\sa120\fs28\b 1. INSTALLATION\b0\fs22\par
+\pard\sa120 Import the complete package into your project. The package contains separate material sets for all three render pipelines (Built-In, URP and HDRP).\par
+After the import has finished and Unity has compiled the scripts, the materials matching your project's active render pipeline are assigned to all prefabs automatically. No manual setup is required.\par
+Optionally, to keep your project smaller, you can deselect the folders of the pipelines you do not use during import:\par
+\pard\sa0\li360 - Built-In project: deselect the "URP" and "HDRP" folders\par
+- URP project: deselect the "Built-In" and "HDRP" folders\par
+\pard\sa240\li360 - HDRP project: deselect the "URP & Built-In" folder\par
+
+\pard\sa120\fs28\b 2. RENDER PIPELINE SETUP\b0\fs22\par
+\pard\sa120 No shader or material setup is required. The package ships one demo scene per render pipeline:\par
+\pard\sa0\li360 - HDRP: Balustrade Modular System/HDRP/Scenes/DemoScene.unity\par
+- URP: Balustrade Modular System/URP & Built-In/URP/Scene/DemoScene.unity\par
+\pard\sa120\li360 - Built-In: Balustrade Modular System/URP & Built-In/Built-In/Scenes/DemoScene.unity\par
+\pard\sa240\li0 Please open the demo scene that matches your active render pipeline. The demo scenes of the other pipelines contain camera and light components belonging to those pipelines and will report missing components if opened in a different pipeline. This is expected and does not affect the balustrade assets, prefabs or the Editor tool.\par
+
+\pard\sa120\fs28\b 3. QUICK START\b0\fs22\par
+\pard\sa0\li360 1. Open the tool from the menu bar: Tools > Balustrade Modular System\par
+2. Click "Start Build Mode".\par
+3. Move the mouse over your scene geometry. A ghost preview of the start pillar follows the cursor.\par
+4. Left-click to place the start pillar.\par
+5. Choose a build direction using the on-screen direction arrows.\par
+6. Move the mouse to extend the balustrade and left-click to commit the previewed segments.\par
+7. Press Escape or click "Stop Build Mode" to finish.\par
+\pard\sa240\li360 8. Select the finished balustrade in the scene, then pick the pillar variant, top, baluster style and finish with the arrows below the preview images. Every change is applied to the selection in place.\par
+
+\pard\sa120\fs28\b 4. THE TOOL WINDOW\b0\fs22\par
+\pard\sa120\b Start Build Mode / Stop Build Mode\b0\line Starts and ends the interactive building workflow in the Scene View.\par
+\b Full Detail\b0\line When enabled, all elements are displayed at their highest detail level (LOD0) regardless of camera distance. Disable this for runtime LOD optimization.\par
+\b Pillar Variant\b0\line Switches between the two pillar variants V1 and V2. The variants use different pillar sizes and rail lengths. With a balustrade selected, the arrows below the preview convert it in place.\par
+\b Top\b0\line Selects the pillar top. Tops are available for the V1 pillar variant. The last slot of the carousel is "No Tops" and removes them again. Tops that are not part of the LITE version carry a golden padlock, exactly like the baluster styles.\par
+\b Baluster Style\b0\line Cycles through all twelve baluster styles. Styles that are not part of the LITE version stay visible and carry a golden padlock; clicking such a preview opens the Asset Store page of the full version.\par
+\b Texture Variant\b0\line Shows the New and the Worn finish side by side. Click a preview image to apply that finish to the selected balustrade; the active column is marked by a highlighted frame. The arrows below each image cycle through the four finishes of that column, and finishes that are not part of the LITE version carry the same padlock. The arrows are only active while a balustrade is selected in the scene.\par
+\pard\sa240\b Get the Full Version\b0\line Opens the Asset Store page of the full Balustrade Modular System.\par
+
+\pard\sa120\fs28\b 5. BUILDING A BALUSTRADE\b0\fs22\par
+\pard\sa120 While Build Mode is active, a real-time ghost preview shows exactly what will be built before you commit. Direction arrows in the Scene View guide the placement.\par
+The ghost start pillar automatically validates the surface underneath it. Slopes, obstacles and objects that would prevent proper construction are detected, and invalid placements are indicated by tinting the ghost red before you click. When no surface is detected below the cursor, the pillar snaps to Y = 0.\par
+\pard\sa240 The surface is treated as flat only when its normal points almost exactly upwards, which corresponds to a tolerance of roughly one degree. This keeps the result architecturally plausible.\par
+
+\pard\sa120\fs28\b 6. PILLAR TYPES\b0\fs22\par
+\pard\sa120 The system includes five pillar types which are managed automatically during construction. You never have to select them manually.\par
+\pard\sa0\li360 - End Pillar (E): placed at the start and end of every balustrade segment\par
+- Middle Pillar (M): connects two rails in a straight line\par
+- T-Junction Pillar (T): connects three rails for branching layouts\par
+- Corner Pillar (C): 90 degree connection between two rails\par
+\pard\sa240\li360 - Corner 45 Pillar (C45): 45 degree connection between two rails\par
+
+\pard\sa120\fs28\b 7. CONTINUE BUILD\b0\fs22\par
+\pard\sa240 Any existing balustrade can be extended from its end pillars. Select an end pillar, pick a direction, and continue building. New segments are connected seamlessly to the existing structure, and the whole continue session is treated as a single undo step.\par
+
+\pard\sa120\fs28\b 8. T-JUNCTIONS AND BRANCHING\b0\fs22\par
+\pard\sa240 Branches can be started from middle pillars and from corner pillars. When you begin building in a new direction from such a pillar, the tool automatically replaces it with the correct T-junction piece and continues the construction from there.\par
+
+\pard\sa120\fs28\b 9. CORNERS AND CURVED RAILS\b0\fs22\par
+\pard\sa240 90 degree corners and curved rails are fully integrated into the building workflow. Inner and outer arcs are handled automatically depending on the direction in which you build, and the matching corner pillar is placed and oriented for you.\par
+
+\pard\sa120\fs28\b 10. CLOSE LOOP\b0\fs22\par
+\pard\sa240 The end of a balustrade can be connected back to an existing pillar to form a closed circuit. The system detects the proximity to the target pillar, highlights the resulting connection in green, and replaces the affected pillars with the correct junction type when you commit.\par
+
+\pard\sa120\fs28\b 11. INNER AND OUTER ARC SWAP\b0\fs22\par
+\pard\sa120 Select a curved rail in the scene. A small button appears above the rail in the Scene View. Clicking it mirrors the rail between inner and outer arc orientation.\par
+\pard\sa240 The neighbouring pillars are updated automatically: middle and corner pillars are exchanged and re-oriented as required, while end pillars are left in place. The swap works with all pillar types and with both the V1 and V2 variant.\par
+
+\pard\sa120\fs28\b 12. VARIANTS, BALUSTER STYLES, TOPS AND TEXTURES\b0\fs22\par
+\pard\sa120 An entire balustrade can be switched between the V1 and V2 variant with a single click. Because the two variants use different pillar sizes and rail lengths, the system recalculates all positions using topology-aware repositioning so that the structure stays aligned. This also works reliably when rail segments have been deleted before.\par
+\pard\sa240 The LITE version includes both pillar variants, three of the twelve baluster styles, one pillar top and one finish in New and Worn condition. Everything else stays visible instead of being skipped: the carousels step through all baluster styles, tops and finishes, a locked entry keeps its preview image in full colour, carries a golden padlock and is labelled "(Full Version)". Clicking a locked preview opens the Asset Store page. The full version ships all twelve baluster styles, four pillar tops and four New plus four Worn finishes.\par
+
+\pard\sa120\fs28\b 13. SELECTION, DELETION AND UNDO\b0\fs22\par
+\pard\sa120 Clicking a rail automatically co-selects its connected pillars for visual clarity. Hold Shift and click to multi-select several rails; the pillars between them are highlighted automatically.\par
+You can delete one or multiple rails in a single action. All affected pillars are repaired automatically so that the structure stays consistent.\par
+Pillars themselves cannot be deleted directly. The system intercepts delete commands on pillars in order to prevent broken balustrades.\par
+\pard\sa240 Every action, including a complete Continue Build session, is grouped into a single undo step. Ctrl+Z therefore reverts the entire operation instead of individual pieces.\par
+
+\pard\sa120\fs28\b 14. FULL DETAIL AND PERFORMANCE\b0\fs22\par
+\pard\sa240 The entire balustrade uses only three materials, regardless of its length or complexity: one for the balusters, one for the pillars and one for the rail tops. Combined with Unity's Static Batching this keeps the number of draw calls low even in large scenes. The Full Detail toggle described in section 4 controls whether LOD levels are used at runtime.\par
+
+\pard\sa120\fs28\b 15. PACKAGE CONTENTS\b0\fs22\par
+\pard\sa0\li360 - Complete Editor tool, no runtime dependencies\par
+- Both pillar variants V1 and V2\par
+- 3 of the 12 baluster styles, straight and curved\par
+- 1 pillar top\par
+- 1 texture set in New and Worn condition\par
+- All pillar types: End, Middle, T-Junction, Corner and Corner 45\par
+- Separate materials for Built-In, URP and HDRP\par
+\pard\sa240\li360 - One demo scene per render pipeline\par
+
+\pard\sa120\fs28\b 16. SCRIPT REFERENCE\b0\fs22\par
+\pard\sa120 All scripts are contained in the namespace WB3DAssets.BalustradeModularSystem. The package is Editor-only and adds no runtime components to your build.\par
+\pard\sa120\b BalustradeModularWindow\b0 (Editor)\line The Editor window that provides the complete building workflow. It is opened from Tools > Balustrade Modular System and is implemented as a partial class across several files, which separate the build logic, chain bookkeeping, continue build, ghost preview, arc swap, variant switching and shared utilities. The same class also assigns the materials matching the active render pipeline after import.\par
+\pard\sa240 The window layout is built with UI Toolkit. BalustradeModularWindow.uxml and BalustradeModularWindow.uss sit next to the script in the same Editor folder and are loaded from there at runtime, so the package folder can be renamed or moved. Keep the three files together.\par
+
+\pard\sa120\fs28\b 17. TROUBLESHOOTING\b0\fs22\par
+\pard\sa120\b Materials appear pink or magenta directly after import\b0\line The automatic material assignment runs once Unity has finished compiling the scripts. Wait for the compilation to complete, then open the tool from Tools > Balustrade Modular System. The prefabs are converted to your active render pipeline automatically.\par
+\b The tool window appears empty\b0\line Close the window and reopen it from Tools > Balustrade Modular System.\par
+\b The tool window reports a missing layout file\b0\line The Editor folder of the package has been split up. BalustradeModularWindow.uxml and BalustradeModularWindow.uss must stay next to BalustradeModularWindow.cs. Move them back and reopen the window.\par
+\b A balustrade cannot be placed at a certain position\b0\line The surface is not flat enough, or an obstacle blocks the placement. Invalid positions are indicated by the ghost preview turning red before you click.\par
+\b A pillar cannot be deleted\b0\line This is intentional. Delete the adjacent rails instead; the pillars are repaired or removed automatically.\par
+\pard\sa240\b A demo scene reports missing components\b0\line You opened the demo scene of a different render pipeline. Please open the demo scene that matches your active pipeline, as listed in section 2.\par
+
+\pard\sa120\fs28\b 18. SUPPORT AND FULL VERSION\b0\fs22\par
+\pard\sa120 Video tutorial: https://youtu.be/F4nQJWpkzmI\par
+Full version (all 12 baluster styles, 4 finishes each in New and Worn, 4 pillar tops):\line https://assetstore.unity.com/packages/3d/props/exterior/balustrade-modular-system-232938\par
+\pard\sa240 For questions and support, please use the publisher contact form on the Asset Store package page.\par
+}

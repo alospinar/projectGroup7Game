@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 78be4995a55cd6447963fdbcfff9a8d4
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 12385, guid: 0000000000000000e000000000000000, type: 0}
+  disableValidation: 0
+AssetOrigin:
+  serializedVersion: 1
+  productId: 387382
+  packageName: Balustrade Modular System LITE
+  packageVersion: 2.3.1
+  assetPath: Assets/Balustrade Modular System/Editor/BalustradeModularWindow.uss
+  uploadId: 1026432
