@@ -73,6 +73,10 @@ public class MenuManager : MonoBehaviour
         pauseButton.SetActive(!isPaused);
 
         Time.timeScale = isPaused ? 0f : 1f;
+        Cursor.visible = isPaused;
+        Cursor.lockState = isPaused
+            ? CursorLockMode.None
+            : CursorLockMode.Locked;
 
         Debug.Log(Time.timeScale);
     }
