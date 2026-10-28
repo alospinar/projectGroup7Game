@@ -61,6 +61,7 @@ MonoBehaviour:
   gameDuration: 20
   player: {fileID: 0}
   book1: {fileID: 0}
-  alwaysShowBookForTesting: 0
+  book2: {fileID: 0}
+  book3: {fileID: 0}
   chasingEnemyCount: 1
   chasingSpawnInterval: 5

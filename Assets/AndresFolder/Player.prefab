@@ -76,6 +76,19 @@ MonoBehaviour:
   runSpeed: 6
   slowMultiplier: 0.35
   bookRunSpeed: 10
+  dashKey: 19
+  dashDistance: 5
+  dashDuration: 0.15
+  dashCooldown: 2
+  reflectKey: 20
+  fireballPrefab: {fileID: 3552903022292932892, guid: 8b71f153b31e4df4aa363c0fe733bc17, type: 3}
+  fireballSpeed: 12
+  fireballLifetime: 3
+  fireballCooldown: 1
+  fireballSpawnDistance: 1.2
+  fireballSpawnHeight: 1.3
+  fireballAttackDelay: 0.35
+  attackTrigger: Attack
   deathRestartDelay: 3
 --- !u!1001 &3920505908583018300
 PrefabInstance:

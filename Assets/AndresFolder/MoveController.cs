@@ -5,9 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class MoveController : MonoBehaviour
 {
-    public const string Book2Key = "Book2Collected";
-    public const string Book3Key = "Book3Collected";
-
     private CharacterController controller;
     private Animator animator;
 
@@ -61,9 +58,6 @@ public class MoveController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
-        hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
-        hasDash = PlayerPrefs.GetInt(Book2Key, 0) == 1;
-        hasReflect = PlayerPrefs.GetInt(Book3Key, 0) == 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -85,8 +79,13 @@ public class MoveController : MonoBehaviour
         dashCooldownTimer -= Time.deltaTime;
         fireballCooldownTimer -= Time.deltaTime;
 
-        if (hasDash && Keyboard.current[dashKey].wasPressedThisFrame
-            && dashCooldownTimer <= 0f && !isDashing)
+        bool dashPressed = Keyboard.current[dashKey].wasPressedThisFrame;
+        if (dashPressed && !hasDash)
+        {
+            Debug.Log("Dash bloqueado: recoge Book2 en este intento.", this);
+        }
+
+        if (hasDash && dashPressed && dashCooldownTimer <= 0f && !isDashing)
         {
             StartCoroutine(Dash());
         }
@@ -206,8 +205,6 @@ public class MoveController : MonoBehaviour
     public void CollectBook()
     {
         hasBook = true;
-        PlayerPrefs.SetInt(BookPosition.Book1Key, 1);
-        PlayerPrefs.Save();
         Debug.Log("Libro book1 agregado al inventario. Carrera rápida activada.", this);
     }
 
@@ -219,8 +216,6 @@ public class MoveController : MonoBehaviour
     public void UnlockDash()
     {
         hasDash = true;
-        PlayerPrefs.SetInt(Book2Key, 1);
-        PlayerPrefs.Save();
         Debug.Log("Book2 agregado al inventario. Dash desbloqueado.", this);
     }
 
@@ -232,8 +227,6 @@ public class MoveController : MonoBehaviour
     public void UnlockReflect()
     {
         hasReflect = true;
-        PlayerPrefs.SetInt(Book3Key, 1);
-        PlayerPrefs.Save();
         Debug.Log("Book3 agregado al inventario. Reflejo desbloqueado.", this);
     }
 
@@ -246,6 +239,7 @@ public class MoveController : MonoBehaviour
     {
         isDashing = true;
         dashCooldownTimer = dashCooldown;
+        Debug.Log("Dash activado.", this);
 
         Vector3 dashDirection = GetMovement();
         if (dashDirection == Vector3.zero)
@@ -256,7 +250,7 @@ public class MoveController : MonoBehaviour
         float dashSpeed = dashDistance / dashDuration;
         float elapsedDashTime = 0f;
 
-        while (elapsedDashTime < dashDuration && !isDead)
+        while (elapsedDashTime < dashDuration && !isDead && controller.enabled)
         {
             controller.Move(dashDirection * dashSpeed * Time.deltaTime);
             elapsedDashTime += Time.deltaTime;

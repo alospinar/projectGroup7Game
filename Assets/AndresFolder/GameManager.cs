@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject book1;
     [SerializeField] private GameObject book2;
     [SerializeField] private GameObject book3;
-    [SerializeField] private bool alwaysShowBookForTesting = true;
 
     private readonly List<GameObject> enemyPool = new List<GameObject>();
     private readonly List<GameObject> chasingEnemyPool = new List<GameObject>();
@@ -39,73 +38,6 @@ public class GameManager : MonoBehaviour
     {
         CreateEnemyPool();
         CreateChasingEnemyPool();
-        RestoreBookInventory();
-    }
-
-    private void RestoreBookInventory()
-    {
-        if (alwaysShowBookForTesting)
-        {
-            ResetBooksForTesting();
-            return;
-        }
-
-        bool hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
-        bool hasDash = PlayerPrefs.GetInt(MoveController.Book2Key, 0) == 1;
-        bool hasReflect = PlayerPrefs.GetInt(MoveController.Book3Key, 0) == 1;
-
-        if (book1 != null)
-        {
-            book1.SetActive(alwaysShowBookForTesting || !hasBook);
-        }
-
-        if (book2 != null)
-        {
-            book2.SetActive(!hasDash);
-        }
-
-        if (book3 != null)
-        {
-            book3.SetActive(!hasReflect);
-        }
-
-        Debug.Log(
-            $"Inventario: book1 {(hasBook ? "obtenido" : "no obtenido")}. "
-            + $"book2 {(hasDash ? "obtenido" : "no obtenido")}. "
-            + $"book3 {(hasReflect ? "obtenido" : "no obtenido")}.",
-            this);
-    }
-
-    private void ResetBooksForTesting()
-    {
-        PlayerPrefs.DeleteKey(BookPosition.Book1Key);
-        PlayerPrefs.DeleteKey(MoveController.Book2Key);
-        PlayerPrefs.DeleteKey(MoveController.Book3Key);
-        PlayerPrefs.Save();
-
-        if (book1 != null)
-        {
-            book1.SetActive(true);
-        }
-
-        if (book2 != null)
-        {
-            book2.SetActive(true);
-        }
-
-        if (book3 != null)
-        {
-            book3.SetActive(true);
-        }
-
-        if (player != null)
-        {
-            player.ResetBook();
-            player.ResetDash();
-            player.ResetReflect();
-        }
-
-        Debug.Log("Pruebas: libros reiniciados y visibles.", this);
     }
 
     private void Start()
@@ -156,7 +88,7 @@ public class GameManager : MonoBehaviour
         }
 
         lastDisplayedSecond = remainingSeconds;
-        Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
+        //Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
     }
 
     private void CreateEnemyPool()
@@ -321,11 +253,6 @@ public class GameManager : MonoBehaviour
 
     public void StartNewGame()
     {
-        PlayerPrefs.DeleteKey(BookPosition.Book1Key);
-        PlayerPrefs.DeleteKey(MoveController.Book2Key);
-        PlayerPrefs.DeleteKey(MoveController.Book3Key);
-        PlayerPrefs.Save();
-
         if (book1 != null)
         {
             book1.SetActive(true);
@@ -348,6 +275,6 @@ public class GameManager : MonoBehaviour
             book3.SetActive(true);
         }
 
-        Debug.Log("Nueva partida: progreso de libros reiniciado.", this);
+        Debug.Log("Nueva partida: libros y habilidades reiniciados.", this);
     }
 }
