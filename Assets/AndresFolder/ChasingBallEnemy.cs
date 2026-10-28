@@ -26,7 +26,7 @@ public class ChasingBallEnemy : MonoBehaviour
         }
 
         Vector3 direction = player.position - transform.position;
-        direction.y = 0f;
+        
 
         if (direction.sqrMagnitude > 0.01f)
         {
