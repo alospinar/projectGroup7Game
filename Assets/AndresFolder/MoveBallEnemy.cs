@@ -15,6 +15,16 @@ public class MoveBallEnemy : MonoBehaviour
         transform.position += transform.forward * speed * Time.deltaTime;
     }
 
+    public void SetDirection(Vector3 direction)
+    {
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            transform.forward = direction.normalized;
+        }
+    }
+
     public void Reflect(Vector3 playerPosition)
     {
         if (isReflected)
