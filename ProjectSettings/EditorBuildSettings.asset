@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/AndresFolder/AndresScene.unity
+    guid: e51836ae581b7674693d5c3800bb81a9
   - enabled: 1
     path: Assets/DanielFolder/DanielScene.unity
     guid: 24dc3111b4a20904cb26b2d9d169c127
@@ -15,5 +15,6 @@ EditorBuildSettings:
     path: Assets/DanielFolder/GameUITestScene.unity
     guid: 06f1dc4284b5b2f498787cfa30c201bd
   m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

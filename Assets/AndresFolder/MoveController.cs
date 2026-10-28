@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class MoveController : MonoBehaviour
 {
@@ -11,26 +13,51 @@ public class MoveController : MonoBehaviour
     [Header("Movimiento")]
     public float walkSpeed = 4f;
     public float runSpeed = 8f;
+    public float slowMultiplier =0.35f;
     [SerializeField] private float bookRunSpeed = 12f;
 
-    [Header("Rotación")]
-    [Tooltip("Velocidad de giro en grados por segundo")]
-    public float turnSpeed = 720f;
+    [Header("Dash")]
+    [SerializeField] private Key dashKey = Key.E;
+    [SerializeField, Min(0.1f)] private float dashDistance = 5f;
+    [SerializeField, Min(0.01f)] private float dashDuration = 0.15f;
+    [SerializeField, Min(0f)] private float dashCooldown = 2f;
 
-    [Header("Muerte")]
-    [SerializeField] private string deathTrigger = "Death";
+    [Header("Bola de fuego")]
+    [SerializeField] private Key reflectKey = Key.F;
+    [SerializeField] private GameObject fireballPrefab;
+    [SerializeField, Min(0.1f)] private float fireballSpeed = 12f;
+    [SerializeField, Min(0.1f)] private float fireballLifetime = 3f;
+    [SerializeField, Min(0f)] private float fireballCooldown = 1f;
+    [SerializeField, Min(0.1f)] private float fireballSpawnDistance = 1.2f;
+    [SerializeField] private float fireballSpawnHeight = 1f;
+    [SerializeField, Min(0f)] private float fireballAttackDelay = 0.35f;
+    [SerializeField] private string attackTrigger = "Attack";
 
-    [Header("Animación")]
-    [SerializeField, Min(0f)] private float idleTransitionTime = 0.15f;
+    //[Header("Rotación")]
+    //[Tooltip("Velocidad de giro en grados por segundo")]
+    private float turnSpeed = 720f;
+
+    //[Header("Muerte")]
+    private string deathTrigger = "Death";
+    [SerializeField, Min(0f)] private float deathRestartDelay = 2f;
+
+    //[Header("Animación")]
+    private float idleTransitionTime = 0.15f;
 
     private bool isDead;
     private bool hasBook;
+    private bool hasDash;
+    private bool hasReflect;
+    private bool isSlowed;
+    private bool isDashing;
+    private Coroutine slowRoutine;
+    private float dashCooldownTimer;
+    private float fireballCooldownTimer;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
-        hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -49,8 +76,34 @@ public class MoveController : MonoBehaviour
 
         bool isRunning = Keyboard.current.leftShiftKey.isPressed
             || Keyboard.current.rightShiftKey.isPressed;
+        dashCooldownTimer -= Time.deltaTime;
+        fireballCooldownTimer -= Time.deltaTime;
+
+        bool dashPressed = Keyboard.current[dashKey].wasPressedThisFrame;
+        if (dashPressed && !hasDash)
+        {
+            Debug.Log("Dash bloqueado: recoge Book2 en este intento.", this);
+        }
+
+        if (hasDash && dashPressed && dashCooldownTimer <= 0f && !isDashing)
+        {
+            StartCoroutine(Dash());
+        }
+
+        if (hasReflect && Keyboard.current[reflectKey].wasPressedThisFrame
+            && fireballCooldownTimer <= 0f && !isDashing)
+        {
+            StartCoroutine(AttackWithFireball());
+        }
+
+        if (isDashing)
+        {
+            return;
+        }
+
         float currentRunSpeed = hasBook ? bookRunSpeed : runSpeed;
         float currentSpeed = isRunning ? currentRunSpeed : walkSpeed;
+        currentSpeed *= isSlowed ? slowMultiplier : 1f;
         Vector3 movement = GetMovement();
 
         RotateTowards(movement);
@@ -68,6 +121,48 @@ public class MoveController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         DieIfHitByBall(other.gameObject);
+    }
+
+    private IEnumerator AttackWithFireball()
+    {
+        if (fireballPrefab == null)
+        {
+            Debug.LogError(
+                "MoveController: asigna el prefab de la bola de fuego del jugador.",
+                this);
+
+            yield break;
+        }
+
+        fireballCooldownTimer = fireballCooldown;
+
+        if (animator != null)
+        {
+            animator.SetTrigger(attackTrigger);
+            yield return null;
+            yield return new WaitForSeconds(fireballAttackDelay);
+        }
+
+        LaunchFireball();
+    }
+
+    private void LaunchFireball()
+    {
+        Vector3 launchDirection = transform.forward;
+        Vector3 spawnPosition = transform.position
+            + launchDirection * fireballSpawnDistance
+            + Vector3.up * fireballSpawnHeight;
+        GameObject fireballObject = Instantiate(fireballPrefab, spawnPosition, Quaternion.LookRotation(launchDirection));
+        PlayerFireball fireball = fireballObject.GetComponent<PlayerFireball>();
+
+        if (fireball == null)
+        {
+            Destroy(fireballObject);
+            Debug.LogError("MoveController: el prefab debe tener el componente PlayerFireball.", this);
+            return;
+        }
+
+        fireball.Initialize(launchDirection, fireballSpeed, fireballLifetime);
     }
 
     private void DieIfHitByBall(GameObject other)
@@ -98,19 +193,89 @@ public class MoveController : MonoBehaviour
             animator.SetFloat("Speed", 0f);
             animator.SetTrigger(deathTrigger);
         }
+
+        Invoke(nameof(RestartAttempt), deathRestartDelay);
+    }
+
+    private void RestartAttempt()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void CollectBook()
     {
         hasBook = true;
-        PlayerPrefs.SetInt(BookPosition.Book1Key, 1);
-        PlayerPrefs.Save();
         Debug.Log("Libro book1 agregado al inventario. Carrera rápida activada.", this);
     }
 
     public void ResetBook()
     {
         hasBook = false;
+    }
+
+    public void UnlockDash()
+    {
+        hasDash = true;
+        Debug.Log("Book2 agregado al inventario. Dash desbloqueado.", this);
+    }
+
+    public void ResetDash()
+    {
+        hasDash = false;
+    }
+
+    public void UnlockReflect()
+    {
+        hasReflect = true;
+        Debug.Log("Book3 agregado al inventario. Reflejo desbloqueado.", this);
+    }
+
+    public void ResetReflect()
+    {
+        hasReflect = false;
+    }
+
+    private IEnumerator Dash()
+    {
+        isDashing = true;
+        dashCooldownTimer = dashCooldown;
+        Debug.Log("Dash activado.", this);
+
+        Vector3 dashDirection = GetMovement();
+        if (dashDirection == Vector3.zero)
+        {
+            dashDirection = transform.forward;
+        }
+
+        float dashSpeed = dashDistance / dashDuration;
+        float elapsedDashTime = 0f;
+
+        while (elapsedDashTime < dashDuration && !isDead && controller.enabled)
+        {
+            controller.Move(dashDirection * dashSpeed * Time.deltaTime);
+            elapsedDashTime += Time.deltaTime;
+            yield return null;
+        }
+
+        isDashing = false;
+    }
+
+    public void ApplySlow(float duration)
+    {
+        if (slowRoutine != null)
+        {
+            StopCoroutine(slowRoutine);
+        }
+
+        slowRoutine = StartCoroutine(SlowRoutine(duration));
+    }
+
+    private IEnumerator SlowRoutine(float duration)
+    {
+        isSlowed = true;
+        yield return new WaitForSeconds(duration);
+        isSlowed = false;
+        slowRoutine = null;
     }
 
     private Vector3 GetMovement()

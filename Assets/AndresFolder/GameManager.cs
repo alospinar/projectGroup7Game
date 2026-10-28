@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     [SerializeField, Min(0.1f)] private float gameDuration = 60f;
     [SerializeField] private MoveController player;
     [SerializeField] private GameObject book1;
+    [SerializeField] private GameObject book2;
+    [SerializeField] private GameObject book3;
 
     private readonly List<GameObject> enemyPool = new List<GameObject>();
     private readonly List<GameObject> chasingEnemyPool = new List<GameObject>();
@@ -36,19 +38,6 @@ public class GameManager : MonoBehaviour
     {
         CreateEnemyPool();
         CreateChasingEnemyPool();
-        RestoreBookInventory();
-    }
-
-    private void RestoreBookInventory()
-    {
-        bool hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
-
-        if (hasBook && book1 != null)
-        {
-            book1.SetActive(false);
-        }
-
-        Debug.Log($"Inventario: book1 {(hasBook ? "obtenido" : "no obtenido")}.", this);
     }
 
     private void Start()
@@ -99,7 +88,7 @@ public class GameManager : MonoBehaviour
         }
 
         lastDisplayedSecond = remainingSeconds;
-        Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
+        //Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
     }
 
     private void CreateEnemyPool()
@@ -264,9 +253,6 @@ public class GameManager : MonoBehaviour
 
     public void StartNewGame()
     {
-        PlayerPrefs.DeleteKey(BookPosition.Book1Key);
-        PlayerPrefs.Save();
-
         if (book1 != null)
         {
             book1.SetActive(true);
@@ -275,8 +261,20 @@ public class GameManager : MonoBehaviour
         if (player != null)
         {
             player.ResetBook();
+            player.ResetDash();
+            player.ResetReflect();
         }
 
-        Debug.Log("Nueva partida: progreso de libros reiniciado.", this);
+        if (book2 != null)
+        {
+            book2.SetActive(true);
+        }
+
+        if (book3 != null)
+        {
+            book3.SetActive(true);
+        }
+
+        Debug.Log("Nueva partida: libros y habilidades reiniciados.", this);
     }
 }
