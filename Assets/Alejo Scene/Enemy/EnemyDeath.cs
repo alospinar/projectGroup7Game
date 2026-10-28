@@ -67,6 +67,7 @@ public class EnemyDeath : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+        AudioManager.Instance?.PlayDeathSFX();
         if (gameManager != null)
         {
             gameManager.EndGameBecauseEnemyDied();

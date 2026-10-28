@@ -11,6 +11,7 @@ public class ReflectBook : MonoBehaviour
         }
 
         player.UnlockReflect();
+        AudioManager.Instance?.PlayBookSFX();
         GameManager gameManager = FindFirstObjectByType<GameManager>();
         if (gameManager != null)
         {

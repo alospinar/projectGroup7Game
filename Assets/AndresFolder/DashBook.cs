@@ -11,6 +11,7 @@ public class DashBook : MonoBehaviour
         }
 
         player.UnlockDash();
+        AudioManager.Instance?.PlayBookSFX();
         GameManager gameManager = FindFirstObjectByType<GameManager>();
         if (gameManager != null)
         {
