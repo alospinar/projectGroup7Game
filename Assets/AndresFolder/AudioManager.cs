@@ -17,6 +17,9 @@ public class AudioManager : MonoBehaviour
     [Header("Fire SFX")]
     [SerializeField] AudioClip fireClip;
     [SerializeField] [Range(0,1)] float fireVolume = 1f;
+    [Header("BookDebuff SFX")]
+    [SerializeField] AudioClip bookdClip;
+    [SerializeField] [Range(0,1)] float bookdVolume = 1f;
 
     public static AudioManager Instance { get; private set; }
 
@@ -49,6 +52,10 @@ public class AudioManager : MonoBehaviour
     public void PlayFireSFX()
     {
         PlayAudioClip(fireClip, fireVolume);
+    }
+    public void PlayBookDefSFX()
+    {
+        PlayAudioClip(bookdClip, bookdVolume);
     }
 
     private void PlayAudioClip(AudioClip clip, float volume)

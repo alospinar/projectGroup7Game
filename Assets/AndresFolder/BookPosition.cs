@@ -27,7 +27,6 @@ public class BookPosition : MonoBehaviour
     {
         if (positionContainer == null || positionContainer.childCount == 0)
         {
-            Debug.LogError("BookPosition: asigna un objeto con posiciones hijas.", this);
             enabled = false;
             return;
         }

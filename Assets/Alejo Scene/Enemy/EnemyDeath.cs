@@ -74,7 +74,6 @@ public class EnemyDeath : MonoBehaviour
         }
         else
         {
-            Debug.LogError("EnemyDeath: falta asignar GameManager.", this);
         }
 
         if (animator != null)
