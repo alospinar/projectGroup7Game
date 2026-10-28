@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using TMPro;
 public class GameManager : MonoBehaviour
 {
     [Header("Enemigos")]
@@ -19,8 +19,12 @@ public class GameManager : MonoBehaviour
 
     [Header("Tiempo de partida")]
     [SerializeField, Min(0.1f)] private float gameDuration = 60f;
+    [SerializeField, Min(0f)] private float bookTimeBonus = 60f;
     [SerializeField] private MoveController player;
     [SerializeField] private GameObject book1;
+    [SerializeField] private GameObject book2;
+    [SerializeField] private GameObject book3;
+    [SerializeField] private TMP_Text timeText;
 
     private readonly List<GameObject> enemyPool = new List<GameObject>();
     private readonly List<GameObject> chasingEnemyPool = new List<GameObject>();
@@ -29,26 +33,18 @@ public class GameManager : MonoBehaviour
     private float chasingSpawnTimer;
     private int lastDisplayedSecond = -1;
     private bool spawning = true;
+    public SpellResetBehaviour spellResetBehaviour;
     [SerializeField, Min(0)] private int chasingEnemyCount = 1;
     [SerializeField, Min(0.1f)] private float chasingSpawnInterval = 15f;
+    public bool playerIsDead = false;
+    public bool gameWin = false;
+    private bool gameEnded;
 
     private void Awake()
     {
         CreateEnemyPool();
         CreateChasingEnemyPool();
-        RestoreBookInventory();
-    }
-
-    private void RestoreBookInventory()
-    {
-        bool hasBook = PlayerPrefs.GetInt(BookPosition.Book1Key, 0) == 1;
-
-        if (hasBook && book1 != null)
-        {
-            book1.SetActive(false);
-        }
-
-        Debug.Log($"Inventario: book1 {(hasBook ? "obtenido" : "no obtenido")}.", this);
+        playerIsDead = false;
     }
 
     private void Start()
@@ -62,13 +58,15 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-
-        elapsedTime += Time.deltaTime;
-        PrintRemainingTime();
+        if (!playerIsDead)
+        {
+            elapsedTime += Time.deltaTime;
+        }
+        PrintRemainingTime(playerIsDead);
 
         if (elapsedTime >= gameDuration)
         {
-            StopSpawning();
+            StopSpawning(false);
             return;
         }
 
@@ -89,17 +87,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void PrintRemainingTime()
+    private void PrintRemainingTime(bool canSpell)
     {
-        int remainingSeconds = Mathf.Max(0, Mathf.CeilToInt(gameDuration - elapsedTime));
-
-        if (remainingSeconds == lastDisplayedSecond)
+        if (!canSpell)
         {
-            return;
-        }
+            int remainingSeconds = Mathf.Max(0, Mathf.CeilToInt(gameDuration - elapsedTime));
 
-        lastDisplayedSecond = remainingSeconds;
-        Debug.Log($"Tiempo restante: {remainingSeconds} segundos", this);
+            if (remainingSeconds == lastDisplayedSecond)
+            {
+                return;
+            }
+
+            lastDisplayedSecond = remainingSeconds;
+
+            if (timeText != null)
+            {
+                timeText.text = $"Tiempo para el bucle: {remainingSeconds}";
+            }
+        }
+    }
+
+    public void AddBookTime()
+    {
+        gameDuration += bookTimeBonus;
+        Debug.Log(
+            $"Libro recogido. Se añadieron {bookTimeBonus:0} segundos. "
+            + $"Tiempo total: {gameDuration:0} segundos.",
+            this);
     }
 
     private void CreateEnemyPool()
@@ -153,7 +167,17 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            enemy.transform.SetPositionAndRotation(GetRandomSpawnPosition(), Quaternion.identity);
+            Transform spawnPoint = GetRandomSpawnPoint();
+            enemy.transform.SetPositionAndRotation(
+                spawnPoint.position,
+                spawnPoint.rotation);
+
+            MoveBallEnemy fireball = enemy.GetComponent<MoveBallEnemy>();
+            if (fireball != null)
+            {
+                fireball.SetDirection(spawnPoint.forward);
+            }
+
             enemy.SetActive(true);
         }
     }
@@ -201,7 +225,9 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            enemy.transform.SetPositionAndRotation(GetRandomSpawnPosition(), Quaternion.identity);
+            enemy.transform.SetPositionAndRotation(
+                GetRandomSpawnPoint().position,
+                Quaternion.identity);
             enemy.SetActive(true);
             break;
         }
@@ -229,10 +255,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Vector3 GetRandomSpawnPosition()
+    private Transform GetRandomSpawnPoint()
     {
-        GameObject spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        return spawnPoint.transform.position;
+        return spawnPoints[Random.Range(0, spawnPoints.Length)].transform;
     }
 
     private static bool IsInsideRange(Vector3 position, Vector3 minimum, Vector3 maximum)
@@ -242,8 +267,10 @@ public class GameManager : MonoBehaviour
             && position.z >= minimum.z && position.z <= maximum.z;
     }
 
-    private void StopSpawning()
+    private void StopSpawning(bool won)
     {
+        if (gameEnded) return;
+        gameEnded = true;
         spawning = false;
 
         foreach (GameObject enemy in enemyPool)
@@ -256,17 +283,18 @@ public class GameManager : MonoBehaviour
             enemy.SetActive(false);
         }
 
-        if (player != null)
+        if (spellResetBehaviour != null)
         {
-            player.Die();
+            spellResetBehaviour.PlaySequence(won);
+        }
+        else
+        {
+            Debug.LogError("GameManager: falta asignar SpellResetBehaviour.", this);
         }
     }
 
     public void StartNewGame()
     {
-        PlayerPrefs.DeleteKey(BookPosition.Book1Key);
-        PlayerPrefs.Save();
-
         if (book1 != null)
         {
             book1.SetActive(true);
@@ -275,8 +303,24 @@ public class GameManager : MonoBehaviour
         if (player != null)
         {
             player.ResetBook();
+            player.ResetDash();
+            player.ResetReflect();
         }
 
-        Debug.Log("Nueva partida: progreso de libros reiniciado.", this);
+        if (book2 != null)
+        {
+            book2.SetActive(true);
+        }
+
+        if (book3 != null)
+        {
+            book3.SetActive(true);
+        }
+
+        Debug.Log("Nueva partida: libros y habilidades reiniciados.", this);
+    }
+    public void EndGameBecauseEnemyDied()
+    {
+        StopSpawning(true);
     }
 }

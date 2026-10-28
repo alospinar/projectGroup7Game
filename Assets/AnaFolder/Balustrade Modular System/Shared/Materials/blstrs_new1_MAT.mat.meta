@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 29909cb694c401c459239430ab13d206
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 387382
+  packageName: Balustrade Modular System LITE
+  packageVersion: 2.3.1
+  assetPath: Assets/Balustrade Modular System/Shared/Materials/blstrs_new1_MAT.mat
+  uploadId: 1026432

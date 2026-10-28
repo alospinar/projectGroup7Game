@@ -7,6 +7,7 @@ public class EnemyAudio : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip attackSound;
     public AudioClip idleSound;
+    public AudioClip deathSound;
 
     void Start()
     {
@@ -32,6 +33,18 @@ public class EnemyAudio : MonoBehaviour
         if (audioSource != null && idleSound != null)
         {
             audioSource.PlayOneShot(idleSound);
+        }
+    }
+    // Método para reproducir la muerte y detener otros sonidos
+    public void PlayDeathSound()
+    {
+        if (audioSource != null)
+        {
+            audioSource.Stop(); // Detiene la respiración en bucle
+            if (deathSound != null)
+            {
+                audioSource.PlayOneShot(deathSound);
+            }
         }
     }
 }
