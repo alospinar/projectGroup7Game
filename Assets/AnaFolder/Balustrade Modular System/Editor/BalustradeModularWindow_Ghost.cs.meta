@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3a744044397f07e40a7d5a0fe5f41075
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 387382
+  packageName: Balustrade Modular System LITE
+  packageVersion: 2.3.1
+  assetPath: Assets/Balustrade Modular System/Editor/BalustradeModularWindow_Ghost.cs
+  uploadId: 1026432

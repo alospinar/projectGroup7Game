@@ -1,0 +1,105 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement class="root">
+
+        <ui:VisualElement class="header">
+            <ui:Label name="app-title" text="Balustrade Modular System" class="title" />
+        </ui:VisualElement>
+
+        <ui:ScrollView class="scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
+
+            <ui:VisualElement class="card">
+                <ui:Label text="BUILD" class="card-title" />
+                <ui:Label text="Start build mode, then click in the Scene View to place pillars and railings." class="card-desc" />
+                <ui:Button name="build-btn" text="Start Build Mode" class="btn btn-primary btn-tall" />
+                <ui:Toggle name="full-detail-toggle" label="Full Detail" class="opt-toggle solo-toggle"
+                           tooltip="When enabled, all elements display at highest detail (LOD0) regardless of camera distance. Disable for runtime LOD optimization." />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="card-row">
+
+                <ui:VisualElement class="card card-col">
+                    <ui:Label text="PILLAR VARIANT" class="card-title" />
+                    <ui:Label name="pillar-desc" text="Select a balustrade to convert it." class="card-desc" />
+
+                    <ui:VisualElement name="pillar-preview" class="preview preview-half">
+                        <ui:VisualElement name="pillar-lock" class="lock-badge lock-badge-small hidden" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="carousel-bar">
+                        <ui:Button name="pillar-prev" text="&lt;" class="arrow" />
+                        <ui:Label name="pillar-name" text="Variant V1" class="carousel-caption" picking-mode="Ignore" />
+                        <ui:Button name="pillar-next" text="&gt;" class="arrow" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="top-card" class="card card-col">
+                    <ui:Label text="TOP" class="card-title" />
+                    <ui:Label name="top-desc" text="Rail tops sit on variant V1." class="card-desc" />
+
+                    <ui:VisualElement name="top-preview" class="preview preview-half">
+                        <ui:Label name="top-empty" text="No Tops" class="preview-empty hidden" picking-mode="Ignore" />
+                        <ui:VisualElement name="top-lock" class="lock-badge lock-badge-small hidden" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="carousel-bar">
+                        <ui:Button name="top-prev" text="&lt;" class="arrow" />
+                        <ui:Label name="top-name" text="No Tops" class="carousel-caption" picking-mode="Ignore" />
+                        <ui:Button name="top-next" text="&gt;" class="arrow" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+            </ui:VisualElement>
+
+            <ui:VisualElement class="card">
+                <ui:Label text="BALUSTER STYLE" class="card-title" />
+                <ui:Label name="baluster-desc" text="Twelve styles, swapped on the selected balustrade in place." class="card-desc" />
+
+                <ui:VisualElement name="baluster-preview" class="preview preview-large">
+                    <ui:VisualElement name="baluster-lock" class="lock-badge lock-badge-large hidden" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="carousel-bar">
+                    <ui:Button name="baluster-prev" text="&lt;" class="arrow" />
+                    <ui:Label name="baluster-name" text="Baluster Style #1" class="carousel-caption" picking-mode="Ignore" />
+                    <ui:Button name="baluster-next" text="&gt;" class="arrow" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="texture-card" class="card">
+                <ui:Label text="TEXTURE VARIANT" class="card-title" />
+                <ui:Label name="texture-desc" text="Select a balustrade in the Scene View to change its finish." class="card-desc" />
+
+                <ui:VisualElement class="finish-row">
+
+                    <ui:VisualElement class="finish-col">
+                        <ui:VisualElement name="new-preview" class="preview preview-small">
+                            <ui:VisualElement name="new-lock" class="lock-badge lock-badge-small hidden" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="carousel-bar">
+                            <ui:Button name="new-prev" text="&lt;" class="arrow" />
+                            <ui:Label name="new-name" text="New #1" class="carousel-caption" picking-mode="Ignore" />
+                            <ui:Button name="new-next" text="&gt;" class="arrow" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="finish-col">
+                        <ui:VisualElement name="worn-preview" class="preview preview-small">
+                            <ui:VisualElement name="worn-lock" class="lock-badge lock-badge-small hidden" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="carousel-bar">
+                            <ui:Button name="worn-prev" text="&lt;" class="arrow" />
+                            <ui:Label name="worn-name" text="Worn #1" class="carousel-caption" picking-mode="Ignore" />
+                            <ui:Button name="worn-next" text="&gt;" class="arrow" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+        </ui:ScrollView>
+
+        <ui:VisualElement class="footer">
+            <ui:Label text="Tip: Use Ctrl+Z to undo any action." class="tip" />
+            <ui:Label name="lite-hint" text="LITE version - 3 of 12 baluster styles, 1 of 4 tops, 1 finish." class="lite-hint" />
+            <ui:Button name="upsell-btn" text="Get the Full Version  (all styles, tops &amp; finishes)" class="btn btn-upsell" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
