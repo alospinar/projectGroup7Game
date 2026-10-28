@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class MoveController : MonoBehaviour
 {
@@ -13,7 +15,7 @@ public class MoveController : MonoBehaviour
     [Header("Movimiento")]
     public float walkSpeed = 4f;
     public float runSpeed = 8f;
-    public float slowMultiplier =0.35f;
+    public float slowMultiplier = 0.35f;
     [SerializeField] private float bookRunSpeed = 12f;
 
     [Header("Dash")]
@@ -33,6 +35,9 @@ public class MoveController : MonoBehaviour
     [SerializeField, Min(0f)] private float fireballAttackDelay = 0.35f;
     [SerializeField] private string attackTrigger = "Attack";
 
+    [Header("UIManager")]
+    [SerializeField] private MenuManager menuManager;
+
     //[Header("Rotación")]
     //[Tooltip("Velocidad de giro en grados por segundo")]
     private float turnSpeed = 720f;
@@ -43,8 +48,9 @@ public class MoveController : MonoBehaviour
 
     //[Header("Animación")]
     private float idleTransitionTime = 0.15f;
-
+    private int bookCount;
     private bool isDead;
+    public TMP_Text bookCountText;
     private bool hasBook;
     private bool hasDash;
     private bool hasReflect;
@@ -199,18 +205,24 @@ public class MoveController : MonoBehaviour
 
     private void RestartAttempt()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        menuManager.PauseGame(true);
     }
 
     public void CollectBook()
     {
         hasBook = true;
         Debug.Log("Libro book1 agregado al inventario. Carrera rápida activada.", this);
+        bookCount++;
+        bookCountText.text = ": " + bookCount.ToString();
+
+
     }
 
     public void ResetBook()
     {
         hasBook = false;
+        bookCount = 0;
+        bookCountText.text = ": " + bookCount.ToString();
     }
 
     public void UnlockDash()
