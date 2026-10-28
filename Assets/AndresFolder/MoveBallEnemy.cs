@@ -42,7 +42,6 @@ public class MoveBallEnemy : MonoBehaviour
 
         transform.forward = direction.normalized;
         isReflected = true;
-        Debug.Log("Bola reflejada.", this);
     }
 
     private void OnTriggerEnter(Collider other)

@@ -87,10 +87,6 @@ public class MoveController : MonoBehaviour
         fireballCooldownTimer -= Time.deltaTime;
 
         bool dashPressed = Keyboard.current[dashKey].wasPressedThisFrame;
-        if (dashPressed && !hasDash)
-        {
-            Debug.Log("Dash bloqueado: recoge Book2 en este intento.", this);
-        }
 
         if (hasDash && dashPressed && dashCooldownTimer <= 0f && !isDashing)
         {
@@ -134,10 +130,6 @@ public class MoveController : MonoBehaviour
     {
         if (fireballPrefab == null)
         {
-            Debug.LogError(
-                "MoveController: asigna el prefab de la bola de fuego del jugador.",
-                this);
-
             yield break;
         }
 
@@ -165,7 +157,6 @@ public class MoveController : MonoBehaviour
         if (fireball == null)
         {
             Destroy(fireballObject);
-            Debug.LogError("MoveController: el prefab debe tener el componente PlayerFireball.", this);
             return;
         }
 
@@ -202,7 +193,6 @@ public class MoveController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("MoveController: falta asignar GameManager.", this);
         }
 
         controller.enabled = false;
@@ -225,7 +215,6 @@ public class MoveController : MonoBehaviour
     {
         hasBook = true;
         AudioManager.Instance?.PlayBookSFX();
-        Debug.Log("Libro book1 agregado al inventario. Carrera rápida activada.", this);
         bookCount++;
         bookCountText.text = ": " + bookCount.ToString();
 
@@ -242,7 +231,6 @@ public class MoveController : MonoBehaviour
     public void UnlockDash()
     {
         hasDash = true;
-        Debug.Log("Book2 agregado al inventario. Dash desbloqueado.", this);
     }
 
     public void ResetDash()
@@ -253,7 +241,6 @@ public class MoveController : MonoBehaviour
     public void UnlockReflect()
     {
         hasReflect = true;
-        Debug.Log("Book3 agregado al inventario. Reflejo desbloqueado.", this);
     }
 
     public void ResetReflect()
@@ -265,7 +252,6 @@ public class MoveController : MonoBehaviour
     {
         isDashing = true;
         dashCooldownTimer = dashCooldown;
-        Debug.Log("Dash activado.", this);
         AudioManager.Instance?.PlayDashSFX();
 
         Vector3 dashDirection = GetMovement();

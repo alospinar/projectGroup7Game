@@ -110,23 +110,17 @@ public class GameManager : MonoBehaviour
     public void AddBookTime()
     {
         gameDuration += bookTimeBonus;
-        Debug.Log(
-            $"Libro recogido. Se añadieron {bookTimeBonus:0} segundos. "
-            + $"Tiempo total: {gameDuration:0} segundos.",
-            this);
     }
 
     private void CreateEnemyPool()
     {
         if (enemyPrefab == null)
         {
-            Debug.LogError("GameManager: asigna un prefab en Enemy Prefab.", this);
             return;
         }
 
         if (spawnPoints == null || spawnPoints.Length == 0)
         {
-            Debug.LogError("GameManager: agrega al menos un punto en Spawn Points.", this);
             return;
         }
 
@@ -134,7 +128,6 @@ public class GameManager : MonoBehaviour
         {
             if (spawnPoints[i] == null)
             {
-                Debug.LogError($"GameManager: el punto de aparición {i} está vacío.", this);
                 return;
             }
         }
@@ -201,7 +194,6 @@ public class GameManager : MonoBehaviour
             ChasingBallEnemy chasingEnemy = enemy.GetComponent<ChasingBallEnemy>();
             if (chasingEnemy == null)
             {
-                Debug.LogError("GameManager: el prefab perseguidor no tiene ChasingBallEnemy.", this);
                 Destroy(enemy);
                 continue;
             }
@@ -289,7 +281,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("GameManager: falta asignar SpellResetBehaviour.", this);
         }
     }
 
@@ -317,7 +308,6 @@ public class GameManager : MonoBehaviour
             book3.SetActive(true);
         }
 
-        Debug.Log("Nueva partida: libros y habilidades reiniciados.", this);
     }
     public void EndGameBecauseEnemyDied()
     {

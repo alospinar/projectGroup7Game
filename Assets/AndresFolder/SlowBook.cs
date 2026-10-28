@@ -13,6 +13,7 @@ public class SlowBook : MonoBehaviour
         }
 
         player.ApplySlow(slowDuration);
+        AudioManager.Instance?.PlayBookDefSFX();
         gameObject.SetActive(false);
     }
 }
